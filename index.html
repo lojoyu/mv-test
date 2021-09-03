@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MV</title>
+		<meta charset="utf-8" name="description" content="">
+		
+    <!-- aframe script -->
+		<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1f00d0beadf87bad7d275c174616e048f8b573fc/dist/aframe-master.min.js"></script>
+
+    <!-- other component -->
+		<script src="https://unpkg.com/aframe-audio-analyser@^1.0.0/dist/aframe-audio-analyser.umd.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+		<script src="./js/showinfo.js"></script>
+		<!-- <script src="https://unpkg.com/aframe-animation-component@^4.1.1/dist/aframe-animation-timeline-component.min.js"></script> -->
+		<script src="https://unpkg.com/aframe-animation-timeline-component@1.6.0/dist/aframe-animation-timeline-component.min.js"></script> 
+		<script src="./js/generate.js"></script>
+		<script src="./js/test.js"></script>
+		<script src="./js/movecam.js"></script>
+		<script src="./js/emitonclick.js"></script>
+		<script src="./js/soundutils.js"></script>
+		<script src="./js/audiohandler.js"></script>
+		<script src="./js/ringonbeat.js"></script>
+		<script src="./js/circlebeat.js"></script>
+		<script src="./js/changecolor.js"></script>
+	</head>
+	<body>
+		<a-scene stats
+			background="color: black"
+			pool__plane="mixin: plane; size: 1000; container: #planescene"
+			pool__circle="mixin: circlem;
+						size: 10;"
+			>
+			<a-asset>
+				<audio id="intro"
+					src="./assets/sound/Intro.mp3"
+					preload="auto">
+				</audio>
+				
+				<a-mixin id="plane"
+					rotation="-90 0 0"
+					geometry="primitive: plane; width: 0.8; height: 0.8"
+					material="color: white; opacity: 0."
+					test
+					animation__fadein="property: components.material.material.opacity;
+						from: 0.;
+						to: 1.;
+						loop: true;
+						dir: alternate;
+						dur: 500;"
+				>
+				</a-mixin>
+				<a-mixin id="circlem"
+					rotation="-90 0 0"
+					geometry="primitive: torus"
+					material="color: white; opacity: 0.8;
+					shader: flat"
+					circlebeat>
+				</a-mixin>
+			</a-asset>
+
+			<a-light type="ambient" changecolor="analyserEl: #analyser">
+			</a-light>
+			
+			<a-box id="startbox"
+				position="0 2 -3"
+				class="interactable"
+				emitonclick
+				audiohandler="audio: #intro"
+				animation__rotate="property: rotation; 
+					from: 0 0 0;
+					to: 0 360 0;
+					loop: true;
+					dur: 3000;"
+				animation__mouseenter="property: scale; 
+					to: 1.2 1.2 1.2;
+					startEvents: mouseenter;
+					dur: 200;"
+				animation__mouseleave="property: scale; 
+					to: 1 1 1;
+					startEvents: mouseleave;
+					dur: 200;"
+				animation__fade="property: visible; 
+								to: false;
+								startEvents: click">
+			</a-box>
+			
+			<a-entity id="planescene" 
+				movecontrol="zoffset: 10">
+				
+			</a-entity>
+
+			<a-entity id="analyser"></a-entity>
+
+			<a-entity
+			  ring-on-beat="analyserEl:#analyser; beat:high;"
+			>
+			</a-entity>
+			
+			
+			<!-- <a-entity id="rig" 
+				movement-controls> -->
+				<a-entity id="firstcam"
+					camera="active: true"
+					position="0 2 0"
+					look-controls>
+					<a-entity cursor="rayOrigin: mouse"
+						raycaster="objects: .interactable">
+					</a-entity>
+				</a-entity>
+
+				<a-entity id="secondcam"
+					camera="active: false"
+					position="0 4 0"
+					rotation="-60 40 0">
+				
+			</a-entity>
+			<!-- </a-entity> -->
+
+		</a-scene>
+	</body>
+</html>
